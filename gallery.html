@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Witnessing Black Women in Art</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --maroon:    #7a1f2e;
+  --maroon-dk: #561020;
+  --maroon-lt: #a84057;
+  --green:     #1a6b35;
+  --green-lt:  #228b44;
+  --surface:   #ffffff;
+  --soft:      #f2e8df;
+  --mid:       #e4d5c3;
+  --text-1:    #1c0a0e;
+  --text-2:    #4a1f28;
+  --text-3:    #7a5060;
+  --border:    rgba(122,31,46,0.14);
+  --serif:     Georgia, 'Times New Roman', serif;
+  --sans:      system-ui, -apple-system, sans-serif;
+}
+
+html, body { height: 100%; margin: 0; }
+
+body {
+  font-family: var(--serif);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: #111;
+}
+
+/* ── DISCLAIMER OVERLAY ── */
+.disclaimer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 10, 14, 0.82);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1.5rem;
+  transition: opacity 0.3s ease;
+}
+.disclaimer-box {
+  background: var(--surface);
+  border-radius: 10px;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 100%;
+  padding: 2.2rem 2.4rem 1.8rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  border-top: 5px solid var(--maroon);
+  position: relative;
+  z-index: 10000;
+}
+.disclaimer-eyebrow {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--maroon);
+  margin-bottom: 0.6rem;
+}
+.disclaimer-box h2 {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--text-1);
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+.disclaimer-box p {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: var(--text-2);
+  margin-bottom: 1.5rem;
+}
+.disclaimer-btn {
+  display: block;
+  width: 100%;
+  padding: 0.72rem 1rem;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.disclaimer-btn:hover { background: var(--green-lt); }
+.disclaimer-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--maroon);
+  padding: 1rem 2rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.hdr h1 {
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: #fff;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+/* ── WRAPPER holds both views ── */
+.wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── VIEW: IMAGE ── */
+.v-image {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d6ccc0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  transform: translateY(0);
+  opacity: 1;
+  z-index: 2;
+}
+.v-image.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+.v-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.down-btn {
+  position: absolute;
+  bottom: 1.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--green);
+  border: 2px solid rgba(255,255,255,0.4);
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  animation: bob 2s ease-in-out infinite;
+  overflow: visible;
+}
+.down-btn:hover {
+  background: var(--green-lt);
+  animation: none;
+  transform: translateX(-50%) scale(1.1);
+}
+.down-btn::after {
+  content: 'Description below';
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.72);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  padding: 0.3rem 0.65rem;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+.down-btn:hover::after {
+  opacity: 1;
+}
+@keyframes bob {
+  0%,100% { bottom: 1.4rem; }
+  50%      { bottom: 2rem; }
+}
+
+/* ── VIEW: DESCRIPTION ── */
+.v-desc {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  background: var(--surface);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.v-desc.visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* left panel: thumb + meta */
+.d-left {
+  flex: 0 0 28%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+.d-thumb {
+  flex: 0 0 52%;
+  overflow: hidden;
+  background: var(--mid);
+}
+.d-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.d-meta-panel {
+  flex: 0 0 auto;
+  overflow-y: auto;
+  background: var(--soft);
+  padding: 0.9rem 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+/* right panel: art info */
+.d-right {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--surface);
+  padding: 2rem 2.4rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+}
+.up-btn {
+  align-self: flex-start;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--maroon);
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.up-btn:hover { background: var(--maroon-lt); }
+
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 0.5rem;
+}
+.art-title {
+  font-size: clamp(1.1rem, 2vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.18;
+  color: var(--text-1);
+  margin-bottom: 0.28rem;
+}
+.art-artist {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--text-3);
+  margin-bottom: 1.3rem;
+}
+.art-meta {
+  background: var(--soft);
+  border-left: 4px solid var(--maroon);
+  border-radius: 0 6px 6px 0;
+  padding: 0.8rem 1rem;
+  display: grid;
+  grid-template-columns: 78px 1fr;
+  gap: 0.28rem 0.7rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  margin-bottom: 1.3rem;
+}
+.ml { color: var(--text-3); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.07em; }
+.mv { color: var(--text-2); }
+.div { height: 1px; background: var(--border); margin: 0 0 1.1rem; }
+.art-stmt {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: var(--text-1);
+  margin-bottom: 1.3rem;
+}
+.art-stmt em { font-style: italic; color: var(--maroon-lt); }
+.ctx-block {
+  background: var(--soft);
+  border-left: 4px solid var(--green);
+  border-radius: 0 6px 6px 0;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.3rem;
+}
+.ctx-lbl {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 0.4rem;
+}
+.ctx-text {
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: var(--text-2);
+}
+.ctx-text em { font-style: italic; color: var(--maroon-lt); }
+.ctx-link {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--green);
+  text-decoration: none;
+  border-bottom: 1px solid var(--green);
+  transition: color 0.15s, border-color 0.15s;
+}
+.ctx-link:hover { color: var(--green-lt); border-color: var(--green-lt); }
+.src-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #fff;
+  text-decoration: none;
+  background: var(--green);
+  border: none;
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px;
+  align-self: flex-start;
+  margin-top: auto;
+  transition: background 0.18s;
+}
+.src-btn:hover { background: var(--green-lt); }
+
+/* ── CONTROLS ── */
+.controls {
+  background: var(--maroon);
+  padding: 0.78rem 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  position: relative;
+}
+.date-range {
+  position: absolute;
+  left: 1.4rem;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+.btn {
+  height: 38px;
+  padding: 0 1rem;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.1);
+  color: #fde8ec;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.18s, border-color 0.18s, transform 0.1s;
+  white-space: nowrap;
+  user-select: none;
+}
+.btn:hover  { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.45); }
+.btn:active { transform: scale(0.95); }
+.btn.icon   { width: 38px; padding: 0; justify-content: center; font-size: 1.1rem; }
+.btn.reset  { color: #fff; background: var(--green); border-color: var(--green); }
+.btn.reset:hover { background: var(--green-lt); border-color: var(--green-lt); }
+
+.dots { display: flex; gap: 0.4rem; align-items: center; }
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  padding: 0;
+}
+.dot.active { background: #fde8ec; border-color: #fde8ec; transform: scale(1.45); }
+.dot:hover:not(.active) { background: rgba(255,255,255,0.38); }
+
+.ctr {
+  font-family: var(--sans);
+  font-size: 0.74rem;
+  color: rgba(255,255,255,0.5);
+  min-width: 2.8rem;
+  text-align: center;
+}
+
+@media (max-width: 680px) {
+  .v-desc    { flex-direction: column; }
+  .d-left    { flex: 0 0 auto; border-right: none; border-bottom: 1px solid var(--border); }
+  .d-thumb   { height: 44vw; }
+  .d-meta-panel { max-height: 150px; }
+  .d-right   { padding: 1.3rem 1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="disclaimer-overlay" id="disclaimer">
+  <div class="disclaimer-box">
+    <p class="disclaimer-eyebrow">Content Notice</p>
+    <h2>Witnessing Black Women in Art</h2>
+    <p>This gallery includes artworks that contain partial nudity. These works are presented in their full historical and artistic context as part of a curated examination of the representation of Black women across art history.</p>
+    <p>By continuing, you acknowledge this notice.</p>
+    <button class="disclaimer-btn" onclick="var o=document.getElementById('disclaimer');o.style.opacity='0';o.style.transition='opacity 0.35s';setTimeout(function(){o.style.display='none'},360);">I Understand — Enter Gallery</button>
+  </div>
+</div>
+
+<header class="hdr">
+  <h1>Witnessing Black Women in Art</h1>
+</header>
+
+<div class="wrapper">
+
+  <!-- VIEW 1: full image -->
+  <div class="v-image" id="v-image">
+    <img id="main-img" src="" alt="">
+    <button class="down-btn" id="down-btn" aria-label="View description">&#8595;</button>
+  </div>
+
+  <!-- VIEW 2: description -->
+  <div class="v-desc" id="v-desc">
+    <div class="d-left">
+      <div class="d-thumb">
+        <img id="thumb-img" src="" alt="">
+      </div>
+      <div class="d-meta-panel">
+        <div class="art-meta" id="w-meta"></div>
+      </div>
+    </div>
+    <div class="d-right">
+      <button class="up-btn" id="up-btn" aria-label="Back to image">&#8593;</button>
+      <p class="eyebrow">Work in focus</p>
+      <h2 class="art-title"  id="w-title"></h2>
+      <p  class="art-artist" id="w-artist"></p>
+      <div class="div"></div>
+      <p class="art-stmt"    id="w-stmt"></p>
+      <div class="ctx-block">
+        <p class="ctx-lbl">Historical context</p>
+        <p class="ctx-text" id="w-ctx-right"></p>
+      </div>
+      <a class="src-btn" id="w-link" href="#" target="_blank" rel="noopener">&#x2197; Source</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="controls">
+  <span class="date-range">1800 – 1972</span>
+  <button class="btn reset" id="reset-btn">&#8635; Reset</button>
+  <button class="btn icon"  id="prev-btn" aria-label="Previous">&#8592;</button>
+  <div class="dots" id="dots"></div>
+  <button class="btn icon"  id="next-btn" aria-label="Next">&#8594;</button>
+  <span class="ctr" id="ctr">1 / 9</span>
+</div>
+
+<script>
+var works = [
+  {
+    file: "Veranda%20Post%20(%C3%92p%C3%B3%20%C3%92g%C3%B2g%C3%A1)%201.jpg",
+    title: "Veranda Post (Opó Ògògá)",
+    artist: "Yoruba artist (unattributed)",
+    year: "Late 19th – early 20th century",
+    medium: "Wood, pigment",
+    location: "British Museum / multiple collections",
+    stmt: "This carved wooden veranda post (<em>opó</em>) is a masterwork of Yoruba sculptural tradition from the Ekiti region of present-day Nigeria. The female figure — likely a devotee, priestess, or personification of spiritual power — carries a child on her back and often supports a roof beam overhead, embodying the Yoruba ideal of a woman bearing both physical and cosmic weight simultaneously.",
+    ctx: "Veranda posts were commissioned by Yoruba kings (<em>obà</em>) to adorn palace compounds. The carving of such figures was the domain of master sculptors whose workshop traditions passed through lineage. Colonial-era collecting stripped many posts from their architectural context; today they appear in Western museums decontextualized from the Yoruba cosmological systems that gave them meaning.",
+    src: "https://www.britishmuseum.org/collection/search?subject=veranda+post&place=Nigeria"
+  },
+  {
+    file: "Edouard_Manet_-_Olympia_2.jpg",
+    title: "Olympia",
+    artist: "Édouard Manet",
+    year: "1863 (exhibited 1865)",
+    medium: "Oil on canvas, 130.5 × 190 cm",
+    location: "Musée d’Orsay, Paris",
+    stmt: "Manet’s <em>Olympia</em> scandalised the 1865 Salon by presenting a nude courtesan who stares directly at the viewer with cool defiance. Her Black attendant — now identified as Laure — holds a bouquet of flowers from an admirer, her own gaze directed at Olympia rather than the viewer.",
+    ctx: "Scholars including Lorraine O’Grady have argued the painting enacts the racial and sexual hierarchies of Second Empire France: the white woman’s nudity is the subject; the Black woman’s body frames and serves it. Manet referenced Titian’s <em>Venus of Urbino</em>, replacing classical idealization with modern social realism.",
+    src: "https://www.musee-orsay.fr/en/artworks/olympia-712"
+  },
+  {
+    file: "Rosaparks_bus-3.jpg",
+    title: "Rosa Parks on the Montgomery City Bus",
+    artist: "Don Cravens (photographer)",
+    year: "December 21, 1956",
+    medium: "Gelatin silver print",
+    location: "Getty Images / The LIFE Picture Collection",
+    stmt: "This photograph documents Rosa Parks seated on a Montgomery, Alabama city bus on December 21, 1956 — the day the Supreme Court’s ruling desegregating the buses took effect. Parks sits near the front, a quiet assertion of a right newly won.",
+    ctx: "On December 1, 1955, Rosa Parks — a trained NAACP organizer, not merely a tired seamstress as popular mythology claims — refused to give her seat to a white passenger, catalyzing the 381-day Montgomery Bus Boycott and fundamentally reshaping American civil rights history.",
+    src: "https://www.gettyimages.com/detail/news-photo/50476512"
+  },
+  {
+    file: "Why%20Born%20Enslaved_%20Carpeaux%204.jfif",
+    title: "Why Born Enslaved! (Pourquoi naître esclave?)",
+    artist: "Jean-Baptiste Carpeaux",
+    year: "1868",
+    medium: "Marble (also terracotta and plaster versions)",
+    location: "The Metropolitan Museum of Art, New York",
+    stmt: "Carpeaux’s bust depicts a young Black woman with her arms bound behind her, head turned upward in anguish and resistance. The title is inscribed on its base as both a rhetorical question and a moral accusation — created two years after the abolition of slavery in French colonies.",
+    ctx: "Carpeaux reproduced the bust dozens of times in various materials. For decades it was displayed emphasizing its formal beauty; scholars have more recently grappled with the ethics of aestheticizing suffering. The Met’s 2023 exhibition <em>Carpeaux: Unbound</em> addressed this contested history directly.",
+    src: "https://www.metmuseum.org/art/collection/search/867492"
+  },
+  {
+    file: "Billie%20Holiday%205.jpg",
+    title: "Billie Holiday (portrait)",
+    artist: "William P. Gottlieb (photographer)",
+    year: "c. 1947",
+    medium: "Gelatin silver print",
+    location: "Library of Congress, William P. Gottlieb Collection",
+    stmt: "This intimate close-up captures Billie Holiday mid-performance, her face upturned in song. Gottlieb photographed Holiday multiple times for <em>Down Beat</em> magazine. The photograph is notable for its psychological depth — Holiday appears wholly absorbed, rendering the viewer a witness to something private.",
+    ctx: `Billie Holiday (1915–1959) transformed American popular music through intensely personal phrasing. Her 1939 recording of “Strange Fruit” — a searing indictment of lynching — is one of the most politically significant songs in American music history. The FBI surveilled her for singing it. <a href=”https://www.youtube.com/watch?v=Web007rzSOI&list=RDWeb007rzSOI&start_radio=1” target=”_blank” rel=”noopener” class=”ctx-link”>▶ Listen: Strange Fruit (YouTube)</a>`,
+    src: "https://www.loc.gov/item/gottlieb.06871/"
+  },
+  {
+    file: "Chisholm%20campaign%20flyer%206.jpg",
+    title: "Shirley Chisholm Presidential Campaign Poster",
+    artist: "Chisholm for President Committee",
+    year: "1972",
+    medium: "Offset lithograph on paper",
+    location: "Smithsonian National Museum of American History",
+    stmt: `This campaign poster bears Chisholm’s defining slogan: “Unbought and Unbossed.” The design is stark, economical, and confident — mirroring the candidate herself.`,
+    ctx: "Shirley Chisholm (1924–2005) was the first Black woman elected to the U.S. Congress (1968) and the first Black person and first woman to seek the presidential nomination of a major U.S. political party, securing 152 first-ballot delegate votes in 1972.",
+    src: "https://americanhistory.si.edu/collections/search/object/nmah_576335"
+  },
+  {
+    file: "Madeleine%207.jpg",
+    title: "Portrait of Madeleine (Portrait d’une négresse)",
+    artist: "Marie-Guillemine Benoist",
+    year: "1800",
+    medium: "Oil on canvas, 81 × 65 cm",
+    location: "Musée du Louvre, Paris",
+    stmt: "Benoist presents Madeleine — a domestic servant — in the format traditionally reserved for aristocratic portraiture. She meets the viewer’s gaze with composure and quiet dignity. The painting has prompted competing readings: liberation or aestheticized vulnerability?",
+    ctx: "Exhibited at the Salon of 1800, eight years before Napoleon reinstated slavery in French colonies. France had abolished slavery in 1794; this painting appeared during that brief window of legal equality. Madeleine’s name was unknown for nearly two centuries, recovered through archival research in 2019.",
+    src: "https://collections.louvre.fr/ark:/53355/cl010064044"
+  },
+  {
+    file: "blue%20turban%208.jpg",
+    title: "Portrait of a Woman in a Blue Turban",
+    artist: "Eugène Delacroix",
+    year: "c. 1827–30",
+    medium: "Oil on canvas",
+    location: "Musée Fabre, Montpellier (related works)",
+    stmt: `Delacroix centers a young woman of color wearing a vivid teal-blue turban and layered garments with a jewelled brooch. She looks slightly away with a thoughtful, self-possessed expression. Some scholars identify this subject as “Aspasie,” a model who sat for Delacroix multiple times.`,
+    ctx: "Delacroix painted Black and North African subjects throughout his career, informed by his 1832 journey to Morocco and Algeria. This portrait is notable for its psychological interiority — the subject is not a type or allegory but an individual accorded the same attentiveness given to his European subjects.",
+    src: "https://www.musee-fabre.fr/en/collections"
+  },
+  {
+    file: "Douglas%209.jpg",
+    title: "Book cover: Not Without Laughter",
+    artist: "Aaron Douglas (cover) · Langston Hughes (author)",
+    year: "1930",
+    medium: "Offset lithograph (book jacket design)",
+    location: "Alfred A. Knopf, New York — first edition",
+    stmt: "Aaron Douglas’s cover design uses a palette of salmon, cream, and forest green to compose a scene of Black southern life: a guitarist reclines in lush foliage while a woman dances in the background. The silhouetted figures draw on African woodblock aesthetics and Art Deco geometry.",
+    ctx: `Langston Hughes’ <em>Not Without Laughter</em> (1930) follows a young Black boy coming of age in Kansas. Aaron Douglas (1899–1979) — sometimes called “the Father of Black American Art” — synthesized African visual traditions with modernist forms, placing Black aesthetics at the center of American literary culture.`,
+    src: "https://aalbc.com/books/bookinfo.php?isbn13=9780684717524"
+  }
+];
+
+var current  = 0;
+var descOpen = false;
+
+var mainImg  = document.getElementById('main-img');
+var thumbImg = document.getElementById('thumb-img');
+var vImage   = document.getElementById('v-image');
+var vDesc    = document.getElementById('v-desc');
+var dotsEl   = document.getElementById('dots');
+var ctrEl    = document.getElementById('ctr');
+
+/* build dots */
+for (var i = 0; i < works.length; i++) {
+  (function(idx) {
+    var d = document.createElement('button');
+    d.className = 'dot' + (idx === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Work ' + (idx + 1));
+    d.addEventListener('click', function() { goTo(idx); });
+    dotsEl.appendChild(d);
+  })(i);
+}
+
+function row(label, val) {
+  return '<span class="ml">' + label + '</span><span class="mv">' + val + '</span>';
+}
+
+function render(w, idx) {
+  var src = w.file;
+  mainImg.src  = src;
+  mainImg.alt  = w.title;
+  thumbImg.src = src;
+  thumbImg.alt = w.title;
+
+  document.getElementById('w-title').innerHTML    = w.title;
+  document.getElementById('w-artist').textContent = w.artist;
+  document.getElementById('w-stmt').innerHTML     = w.stmt;
+  document.getElementById('w-ctx-right').innerHTML   = w.ctx;
+  document.getElementById('w-link').href          = w.src;
+  document.getElementById('w-meta').innerHTML     =
+    row('Year', w.year) + row('Medium', w.medium) + row('Location', w.location);
+
+  ctrEl.textContent = (idx + 1) + ' / ' + works.length;
+
+  var dots = document.querySelectorAll('.dot');
+  for (var i = 0; i < dots.length; i++) {
+    dots[i].classList.toggle('active', i === idx);
+  }
+
+  var dr = document.querySelector('.d-right');
+  var dm = document.querySelector('.d-meta-panel');
+  if (dr) dr.scrollTop = 0;
+  if (dm) dm.scrollTop = 0;
+}
+
+function showImage() {
+  descOpen = false;
+  vImage.classList.remove('hidden');
+  vDesc.classList.remove('visible');
+}
+
+function showDesc() {
+  descOpen = true;
+  vImage.classList.add('hidden');
+  vDesc.classList.add('visible');
+}
+
+function goTo(idx) {
+  current = idx;
+  render(works[idx], idx);
+  showImage();
+}
+
+document.getElementById('down-btn').addEventListener('click', showDesc);
+document.getElementById('up-btn').addEventListener('click', showImage);
+
+document.getElementById('next-btn').addEventListener('click', function() {
+  goTo((current + 1) % works.length);
+});
+document.getElementById('prev-btn').addEventListener('click', function() {
+  goTo((current - 1 + works.length) % works.length);
+});
+document.getElementById('reset-btn').addEventListener('click', function() {
+  goTo(0);
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight') goTo((current + 1) % works.length);
+  if (e.key === 'ArrowLeft')  goTo((current - 1 + works.length) % works.length);
+  if (e.key === 'ArrowDown' && !descOpen) { e.preventDefault(); showDesc(); }
+  if (e.key === 'ArrowUp'   && descOpen)  { e.preventDefault(); showImage(); }
+  if (e.key === 'Escape')    goTo(0);
+});
+
+/* initial render */
+render(works[0], 0);
+</script>
+</body>
+</html>
